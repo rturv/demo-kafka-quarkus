@@ -5,28 +5,25 @@ import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.jboss.logging.Logger;
-import java.util.Optional;
+import io.quarkus.arc.properties.IfBuildProperty;
 
-@ApplicationScoped
 /**
  * Consumidor de mensajes desde Kafka ligado al canal `mensajes-in`.
  * <p>
- * El consumo se activa solo si la propiedad `mensajes.consumidor.enabled` está
- * configurada a true. Los mensajes recibidos se registran en el logger.
+ * Si la propiedad de build `mensajes.consumidor.enabled` es `true`, este bean
+ * se creará y SmallRye Kafka inicializará el conector. Si es `false`, el bean
+ * no se creará y no habrá conexión/consumo alguno.
  * </p>
  */
+@ApplicationScoped
+@IfBuildProperty(name = "mensajes.consumidor.enabled", stringValue = "true")
 public class MensajesConsumer {
 
     private static final Logger LOG = Logger.getLogger(MensajesConsumer.class);
 
-    @Inject
-    @ConfigProperty(name = "mensajes.consumidor.enabled", defaultValue = "false")
-    boolean consumerEnabled;
 
     @Incoming("mensajes-in")
     public void consumirMensaje(String mensaje) {
-        if (consumerEnabled) {
             LOG.infof("Mensaje recibido de Kafka: %s", mensaje);
-        }
     }
 }

@@ -26,11 +26,11 @@ public class MensajesResource {
     MensajesService mensajesService;
 
     @POST
-    public Response enviarMensaje(Message mensaje) {
+    public Response enviarMensaje(MensajeRequest mensaje) {
         try {
             mensajesService.enviarAKafka(mensaje);
             return Response.ok()
-                    .entity(new ResponseDTO("Mensaje enviado a Kafka: " + mensaje.getSubject()))
+                    .entity(new ResponseDTO("Mensaje enviado a Kafka: " + mensaje.getAsunto()))
                     .build();
         } catch (Exception e) {
             return Response.serverError()

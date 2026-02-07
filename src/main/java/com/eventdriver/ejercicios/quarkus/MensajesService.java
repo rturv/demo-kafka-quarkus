@@ -20,14 +20,20 @@ public class MensajesService {
 
     private static final Logger LOG = Logger.getLogger(MensajesService.class);
 
+    /**
+     *  El emitter se inyecta usando el binding `mensajes-out` definido en application.properties. 
+     *  Este emitter se encargará de enviar los mensajes al topic configurado en el canal 
+     *  `mensajes-out` de SmallRye Reactive Messaging, que a su vez se conectará a 
+     *  Kafka usando la configuración proporcionada en application.properties.
+     */
     @Inject
-    @Channel("mensajes-out")
+    @Channel("mensajes-out")//Canal de salida. 
     Emitter<String> emitter;
 
     @Inject
     ObjectMapper objectMapper;
 
-    public void enviarAKafka(Message mensaje) throws Exception {
+    public void enviarAKafka(MensajeRequest mensaje) throws Exception {
         String jsonMessage = objectMapper.writeValueAsString(mensaje);
         LOG.infof("Enviando mensaje a Kafka: %s", jsonMessage);
         emitter.send(jsonMessage);
