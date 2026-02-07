@@ -72,6 +72,20 @@ Notas:
   añade las propiedades pertinentes del conector Kafka en `application.properties`.
 - Para desactivar el consumidor y solo publicar, ponga `mensajes.consumidor.enabled=false`.
 
+Propiedad recomendada: consumer group id
+
+Si quieres repartir particiones entre instancias y mantener offsets por
+grupo, define el `group.id` del consumidor. En SmallRye/Quarkus se pasa como
+propiedad Kafka dentro del binding entrante:
+
+```properties
+# Ejemplo: fija el group id del consumidor
+mp.messaging.incoming.mensajes-in.group.id=mi-grupo-quarkus
+```
+
+Al definir este valor, múltiples instancias de la aplicación que usen el
+mismo `group.id` se coordinarán y recibirán particiones diferentes.
+
 ## Ejemplos prácticos
 
 Enviar un mensaje (curl):
